@@ -1,16 +1,16 @@
 @RELATION restaurants
 
-@ATTRIBUTE alt {Yes,No}
-@ATTRIBUTE bar {Yes,No}
-@ATTRIBUTE fri {Yes,No}
-@ATTRIBUTE hun {Yes,No}
-@ATTRIBUTE pat {None,Some,Full}
-@ATTRIBUTE price {$,$$,$$$}
-@ATTRIBUTE rain {Yes,No}
-@ATTRIBUTE res {Yes,No}
-@ATTRIBUTE type {French,Thai,Burger,Italian}
-@ATTRIBUTE est {0-10,10-30,30-60,>60}
-@ATTRIBUTE willWait {Yes,No}
+@ATTRIBUTE alt	{Yes,No}
+@ATTRIBUTE bar	{Yes,No}
+@ATTRIBUTE fri	{Yes,No}
+@ATTRIBUTE hun	{Yes,No}
+@ATTRIBUTE pat	{None,Some,Full}
+@ATTRIBUTE price	{$,$$,$$$}
+@ATTRIBUTE rain	{Yes,No}
+@ATTRIBUTE res	{Yes,No}
+@ATTRIBUTE type	{French,Thai,Burger,Italian}
+@ATTRIBUTE est	{0-10,10-30,30-60,>60}
+@ATTRIBUTE willWait	{Yes,No}
 
 @DATA
 Yes,No,No,Yes,Some,$$$,No,Yes,French,0-10,Yes
