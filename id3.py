@@ -17,41 +17,38 @@ def children(tree):
 #takes in examples, which is a list of lists, and attributes, which is also a list of lists, and returns decision tree
 def id3(examples, attributes, parentExamples):
     if examples is None:
-        #have not determined what to return in base case yet
+        # Encountering "new" combination of attributes (not present in training set)
         return tree(pluralityValue(attributes[-1], parentExamples))
-    #write sameClassification function
-    sameClass = sameClassification(examples)
+    sameClass = sameClassification(examples) # returns a classification
     if sameClass != "":
-        #have not determined what to return in base case yet
+        # Encounter a pure set
         return tree(sameClass)
-    elif len(attributes) == 1:
-        #have not determined what to return in base case yet
+    elif len(attributes) == 1: # Only contains classification
+        # Encountering non-deterministic combination of attributes
+        # Same combo of attributes, different classification
         return tree(pluralityValue(attributes[0], examples))
     else:
-        #write importance function
         splittingAttribute = importance(examples, attributes)
-        newAttributes = []
+        newAttributes = [] # list without the attribute to be split on
         splittingAttributeCategories = []
         #removes the splitting attribute from list of available attributes and grabs the categories of the splitting attribute
-        attributeCounter = 0
+        attributeIndex = 0
         for index in range(0, len(attributes)):
             if attributes[index][0] != splittingAttribute:
-                newAttributes += attributes[index][0]
+                newAttributes += attributes[index]
             else:
                 splittingAttributeCategories = attributes[index][1:]
-                attributeCounter = index
-        #write splitExamples function
-        splitExamplesList = splitExamples(attributeCounter, splittingAttributeCategories, examples)
+                attributeIndex = index
+
+        splitExamplesList = splitExamples(attributeIndex, splittingAttributeCategories, examples)
         children = []
         for index in range(0, len(splittingAttributeCategories)):
-            #write subsetIsPure function
             if subsetIsPure(splitExamplesList[index]):
-                #have not determined exactly what to return here yet
-                return []
+                return sameClassification(splitExamplesList[index])
             else:
-                childTree = id3(splitExamplesList[index], newAttributes)
+                childTree = id3(splitExamplesList[index], newAttributes, examples)
                 children += childTree
-        newTree = tree(attributes[splittingAttribute], children)
+        newTree = tree(splittingAttribute, children)
         return newTree
 
 
@@ -79,7 +76,7 @@ def importance(examples, attributes):
             for subcategory in range(0, len(attributes[index]) - 1):
                 if entry[index] == attributes[index][subcategory + 1]:
                     divideExamples[subcategory] += [entry]
-        #for each subcategory, calculates the entropy
+        #for each subcategory, calculate the entropy
         subCategoryEntropy = []
         for subcategory in range(0, len(divideExamples)):
             subExamples = divideExamples[subcategory]
@@ -91,13 +88,13 @@ def importance(examples, attributes):
                 else:
                     secondClass += [entry]
             subClassEntropy = entropy(len(firstClass), len(secondClass))
-            subCategoryEntropy += subClassEntropy
+            subCategoryEntropy += [subClassEntropy]
         #calculates information gain from this particular attribute
         subCategoryTotalEntropy = 0
         for counter in range(0, len(subCategoryEntropy)):
-            subCategoryEntropy -= ((len(divideExamples[counter]) / len(examples)) * subCategoryEntropy[counter])
-        gain = overallEntropy + subCategoryEntropy
-        attributeGains += gain
+            subCategoryTotalEntropy -= ((len(divideExamples[counter]) / len(examples)) * subCategoryEntropy[counter])
+        gain = overallEntropy + subCategoryTotalEntropy
+        attributeGains += [gain]
     #finds the attribute with the best information gain
     maxAttribute = 0
     maxGain = -100000
@@ -147,6 +144,7 @@ def splitExamples(attribute, subCategories, examples):
     numSubCategories = len(subCategories)
     while numSubCategories != 0:
         categorizedExamples += [[]]
+        numSubCategories -= 1
     for subcategory in range(0, len(subCategories)):
         for entry in examples:
             if entry[attribute] == subCategories[subcategory]:
