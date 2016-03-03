@@ -1,3 +1,4 @@
+from random import randint
 import math
 
 # tree function
@@ -14,17 +15,18 @@ def children(tree):
 
 
 #takes in examples, which is a list of lists, and attributes, which is also a list of lists, and returns decision tree
-def id3(examples, attributes):
+def id3(examples, attributes, parentExamples):
     if examples is None:
         #have not determined what to return in base case yet
-        return []
+        return tree(pluralityValue(attributes[-1], parentExamples))
     #write sameClassification function
-    elif sameClassification(examples):
+    sameClass = sameClassification(examples)
+    if sameClass != "":
         #have not determined what to return in base case yet
-        return
-    elif attributes is None:
+        return tree(sameClass)
+    elif len(attributes) == 1:
         #have not determined what to return in base case yet
-        return
+        return tree(pluralityValue(attributes[0], examples))
     else:
         #write importance function
         splittingAttribute = importance(examples, attributes)
@@ -106,6 +108,22 @@ def importance(examples, attributes):
     return attributes[maxAttribute][0]
 
 
+def pluralityValue(lastAttribute, parentExamples):
+    class1 = 0
+    class2 = 0
+    for example in parentExamples:
+        if example[-1] == lastAttribute[1]:
+            class1 += 1
+        else:
+            class2 += 1
+    if class1 > class2:
+        return lastAttribute[1]
+    elif class2 > class1:
+        return lastAttribute[2]
+    else:
+        return lastAttribute[randint(1, 2)]
+
+
 #takes in number of examples in classification 1 and number of examples in classification 2 and calculates the entropy of that given set of data
 def entropy(classification1, classification2):
     totalExamples = classification1 + classification2
@@ -119,10 +137,11 @@ def sameClassification(examples):
     classification = examples[0][-1]
     for index in range(1, len(examples)):
         if examples[index][-1] != classification:
-            return False
-    return True
+            return ""
+    return classification
 
-#takes in attribute, an integer, subcategories, a list of strings, and examples, a list of lists, and returns a list of lists, which correspond to the examples split amongst the appropriate subcategories
+
+#takes in attribute, and integer, subcategories, a list of strings, and examples, a list of lists, and returns a list of lists, which correspond to the examples split amongst the appropriate subcategories
 def splitExamples(attribute, subCategories, examples):
     categorizedExamples = []
     numSubCategories = len(subCategories)
@@ -134,6 +153,7 @@ def splitExamples(attribute, subCategories, examples):
                 categorizedExamples[subcategory] += [entry]
     return categorizedExamples
 
+
 #return a boolean determining whether or not or subset of examples are all pure
 def subsetIsPure(examples):
     classification = examples[0][-1]
@@ -141,6 +161,3 @@ def subsetIsPure(examples):
         if examples[index][-1] != classification:
             return False
     return True
-
-
-print(entropy(6, 2))
