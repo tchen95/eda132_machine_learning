@@ -36,7 +36,7 @@ def id3(examples, attributes, parentExamples):
         attributeCounter = 0
         for index in range(0, len(attributes)):
             if attributes[index][0] != splittingAttribute:
-                newAttributes += attributes[index][0]
+                newAttributes += attributes[index]
             else:
                 splittingAttributeCategories = attributes[index][1:]
                 attributeCounter = index
