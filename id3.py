@@ -43,20 +43,21 @@ def id3(examples, attributes, parentExamples):
         children = []
         for index in range(0, len(splittingAttributeCategories)):
             if subsetIsPure(splitExamplesList[index]):
-                return sameClassification(splitExamplesList[index])
+                children += tree(sameClassification(splitExamplesList[index]))
             else:
-                childTree = id3(splitExamplesList[index], newAttributes, examples)
-                children += childTree
+                children += id3(splitExamplesList[index], newAttributes, examples)
         newTree = tree(splittingAttribute, children)
+        print(newTree)
         return newTree
 
 
 #takes in examples, a list of lists, and attributes, a list of lists, and returns attribute with greatest information gain
 def importance(examples, attributes):
+    print(len(attributes))
     classification1 = []
     classification2 = []
     for entry in examples:
-        if entry[-1] == attributes[-1][0]:
+        if entry[-1] == attributes[-1][1]:
             classification1 += [entry]
         else:
             classification2 += [entry]
@@ -73,6 +74,11 @@ def importance(examples, attributes):
         #divides up the examples amongst each subcategory
         for entry in examples:
             for subcategory in range(0, len(attributes[index]) - 1):
+                # print("index:",index)
+                # print("len(entry)",len(entry))
+                # print("len(attributes)",len(attributes))
+                # print("sub+1",subcategory+1)
+                # print("len(attributes[index])",len(attributes[index]))
                 if entry[index] == attributes[index][subcategory + 1]:
                     divideExamples[subcategory] += [entry]
         #for each subcategory, calculate the entropy
@@ -82,7 +88,7 @@ def importance(examples, attributes):
             firstClass = []
             secondClass = []
             for entry in subExamples:
-                if entry[-1] == attributes[-1][0]:
+                if entry[-1] == attributes[-1][1]:
                     firstClass += [entry]
                 else:
                     secondClass += [entry]
@@ -123,9 +129,20 @@ def pluralityValue(lastAttribute, parentExamples):
 #takes in number of examples in classification 1 and number of examples in classification 2 and calculates the entropy of that given set of data
 def entropy(classification1, classification2):
     totalExamples = classification1 + classification2
-    figure1 = classification1 / float(totalExamples)
-    figure2 = classification2 / float(totalExamples)
-    return ((-1 * figure1) * math.log(figure1, 2)) - ((figure2) * math.log(figure2, 2))
+    if classification1 is 0:
+        figure1 = 0
+    else:
+        figure1 = classification1 / float(totalExamples)
+
+    if classification2 is 0:
+        figure2 = 0
+    else:
+        figure2 = classification2 / float(totalExamples)
+
+    if figure1 == 0.0 or figure2 == 0.0:
+        return 0.0
+    else:
+        return ((-1 * figure1) * math.log(figure1, 2)) - ((figure2) * math.log(figure2, 2))
 
 
 #returns a boolean determining of all the examples are the same classification or not
@@ -158,3 +175,4 @@ def subsetIsPure(examples):
         if examples[index][-1] != classification:
             return False
     return True
+

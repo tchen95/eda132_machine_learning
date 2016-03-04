@@ -38,8 +38,3 @@ def readARFF(filename):
                 dataList.append(splitData)
 
     return relationName, attributeList, dataList
-
-relationName, attributeList, dataList = readARFF("restaurants.arff")
-print(relationName)
-print(attributeList)
-print(dataList)
