@@ -1,6 +1,5 @@
 from random import randint
 import math
-
 # tree function
 def tree(label, children=[]):
     return [label] + list(children)
@@ -9,29 +8,31 @@ def tree(label, children=[]):
 def label(tree):
     return tree[0]
 
+
 def children(tree):
     return tree[1:]
 
 
-#takes in examples, which is a list of lists, and attributes, which is also a list of lists, and returns decision tree
+# takes in examples, which is a list of lists, and attributes, which is also a list of lists, and returns decision tree
 def id3(examples, attributes, parentExamples):
     if examples == []:
         # Encountering "new" combination of attributes (not present in training set)
         return tree(pluralityValue(attributes[-1], parentExamples))
-    sameClass = sameClassification(examples) # returns a classification
+    sameClass = sameClassification(examples)  # returns a classification
     if sameClass != "":
         # Encounter a pure set
         return tree(sameClass)
-    elif len(attributes) == 1: # Only contains classification
+    elif len(attributes) == 1:  # Only contains classification
         # Encountering non-deterministic combination of attributes
         # Same combo of attributes, different classification
         return tree(pluralityValue(attributes[0], examples))
     else:
         splittingAttribute = importance(examples, attributes)
-        newAttributes = [] # list without the attribute to be split on
+        print(splittingAttribute)
+        newAttributes = []  # list without the attribute to be split on
         splittingAttributeCategories = []
         #removes the splitting attribute from list of available attributes and grabs the categories of the splitting attribute
-        attributeIndex = 0       
+        attributeIndex = 0
         for index in range(0, len(attributes)):
             if attributes[index][0] != splittingAttribute:
                 newAttributes += [attributes[index]]
@@ -90,12 +91,14 @@ def importance(examples, attributes):
         #calculates information gain from this particular attribute
         subCategoryTotalEntropy = 0
         for counter in range(0, len(subCategoryEntropy)):
-            subCategoryTotalEntropy -= ((len(divideExamples[counter]) / len(examples)) * subCategoryEntropy[counter])
+            subCategoryTotalEntropy -= ((len(divideExamples[counter]) / float(len(examples))) * subCategoryEntropy[counter])
         gain = overallEntropy + subCategoryTotalEntropy
         attributeGains += [gain]
     #finds the attribute with the best information gain
     maxAttribute = 0
     maxGain = -100000
+    # print(attributeGains)
+    # print(attributes)
     for index in range(0, len(attributeGains)):
         if attributeGains[index] > maxGain:
             maxGain = attributeGains[index]
@@ -118,7 +121,6 @@ def pluralityValue(lastAttribute, parentExamples):
     else:
         return lastAttribute[randint(1, 2)]
 
-
 #takes in number of examples in classification 1 and number of examples in classification 2 and calculates the entropy of that given set of data
 def entropy(classification1, classification2):
     totalExamples = classification1 + classification2
@@ -126,12 +128,10 @@ def entropy(classification1, classification2):
         figure1 = 0
     else:
         figure1 = classification1 / float(totalExamples)
-
     if classification2 is 0:
         figure2 = 0
     else:
         figure2 = classification2 / float(totalExamples)
-
     if figure1 == 0.0 or figure2 == 0.0:
         return 0.0
     else:
@@ -170,4 +170,3 @@ def subsetIsPure(examples):
         if examples[index][-1] != classification:
             return False
     return True
-
