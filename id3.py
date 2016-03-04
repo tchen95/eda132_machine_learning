@@ -36,6 +36,7 @@ def id3(examples, attributes, parentExamples):
             if attributes[index][0] != splittingAttribute:
                 newAttributes += [attributes[index]]
             else:
+                newAttributes += [["XXXXX"]]
                 splittingAttributeCategories = attributes[index][1:]
                 attributeIndex = index
         splitExamplesList = splitExamples(attributeIndex, splittingAttributeCategories, examples)
@@ -45,7 +46,6 @@ def id3(examples, attributes, parentExamples):
                 children += tree(sameClassification(splitExamplesList[index]))
             else:
                 children += id3(splitExamplesList[index], newAttributes, examples)
-        # print(children)
         newTree = tree(splittingAttribute, [children])
         return newTree
 
@@ -92,7 +92,10 @@ def importance(examples, attributes):
         for counter in range(0, len(subCategoryEntropy)):
             subCategoryTotalEntropy -= ((len(divideExamples[counter]) / float(len(examples))) * subCategoryEntropy[counter])
         gain = overallEntropy + subCategoryTotalEntropy
-        attributeGains += [gain]
+        if attributes[index][0] == "XXXXX":
+            attributeGains += [-1000000] 
+        else:
+            attributeGains += [gain]
     #finds the attribute with the best information gain
     maxAttribute = 0
     maxGain = -100000
