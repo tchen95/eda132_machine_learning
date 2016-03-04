@@ -15,7 +15,7 @@ def children(tree):
 
 #takes in examples, which is a list of lists, and attributes, which is also a list of lists, and returns decision tree
 def id3(examples, attributes, parentExamples):
-    if examples is None:
+    if examples == []:
         # Encountering "new" combination of attributes (not present in training set)
         return tree(pluralityValue(attributes[-1], parentExamples))
     sameClass = sameClassification(examples) # returns a classification
@@ -31,14 +31,13 @@ def id3(examples, attributes, parentExamples):
         newAttributes = [] # list without the attribute to be split on
         splittingAttributeCategories = []
         #removes the splitting attribute from list of available attributes and grabs the categories of the splitting attribute
-        attributeIndex = 0
+        attributeIndex = 0       
         for index in range(0, len(attributes)):
             if attributes[index][0] != splittingAttribute:
-                newAttributes += attributes[index]
+                newAttributes += [attributes[index]]
             else:
                 splittingAttributeCategories = attributes[index][1:]
                 attributeIndex = index
-
         splitExamplesList = splitExamples(attributeIndex, splittingAttributeCategories, examples)
         children = []
         for index in range(0, len(splittingAttributeCategories)):
@@ -46,14 +45,13 @@ def id3(examples, attributes, parentExamples):
                 children += tree(sameClassification(splitExamplesList[index]))
             else:
                 children += id3(splitExamplesList[index], newAttributes, examples)
-        newTree = tree(splittingAttribute, children)
-        print(newTree)
+        # print(children)
+        newTree = tree(splittingAttribute, [children])
         return newTree
 
 
 #takes in examples, a list of lists, and attributes, a list of lists, and returns attribute with greatest information gain
 def importance(examples, attributes):
-    print(len(attributes))
     classification1 = []
     classification2 = []
     for entry in examples:
@@ -74,11 +72,6 @@ def importance(examples, attributes):
         #divides up the examples amongst each subcategory
         for entry in examples:
             for subcategory in range(0, len(attributes[index]) - 1):
-                # print("index:",index)
-                # print("len(entry)",len(entry))
-                # print("len(attributes)",len(attributes))
-                # print("sub+1",subcategory+1)
-                # print("len(attributes[index])",len(attributes[index]))
                 if entry[index] == attributes[index][subcategory + 1]:
                     divideExamples[subcategory] += [entry]
         #for each subcategory, calculate the entropy
@@ -170,6 +163,8 @@ def splitExamples(attribute, subCategories, examples):
 
 #return a boolean determining whether or not or subset of examples are all pure
 def subsetIsPure(examples):
+    if examples == []:
+        return False
     classification = examples[0][-1]
     for index in range(1, len(examples)):
         if examples[index][-1] != classification:
