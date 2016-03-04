@@ -28,7 +28,6 @@ def id3(examples, attributes, parentExamples):
         return tree(pluralityValue(attributes[0], examples))
     else:
         splittingAttribute = importance(examples, attributes)
-        print(splittingAttribute)
         newAttributes = []  # list without the attribute to be split on
         splittingAttributeCategories = []
         #removes the splitting attribute from list of available attributes and grabs the categories of the splitting attribute
