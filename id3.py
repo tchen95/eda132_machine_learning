@@ -52,13 +52,6 @@ def id3(examples, attributes, parentExamples):
 
 #takes in examples, a list of lists, and attributes, a list of lists, and returns attribute with greatest information gain
 def importance(examples, attributes):
-    # classification1 = []
-    # classification2 = []
-    # for entry in examples:
-    #     if entry[-1] == attributes[-1][1]:
-    #         classification1 += [entry]
-    #     else:
-    #         classification2 += [entry]
     attributeGains = []
     #calculates the overall entropy of the examples
     overallEntropy = editedEntropy(examples, attributes[-1][1:])
@@ -78,15 +71,6 @@ def importance(examples, attributes):
         #for each subcategory, calculate the entropy
         subCategoryEntropy = []
         for subcategory in range(0, len(divideExamples)):
-            # subExamples = divideExamples[subcategory]
-            # firstClass = []
-            # secondClass = []
-            # for entry in subExamples:
-            #     if entry[-1] == attributes[-1][1]:
-            #         firstClass += [entry]
-            #     else:
-            #         secondClass += [entry]
-            # subClassEntropy = entropy(len(firstClass), len(secondClass))
             subClassEntropy = editedEntropy(divideExamples[subcategory], attributes[-1][1:])
             subCategoryEntropy += [subClassEntropy]
         #calculates information gain from this particular attribute
@@ -101,8 +85,6 @@ def importance(examples, attributes):
     #finds the attribute with the best information gain
     maxAttribute = 0
     maxGain = -100000
-    # print(attributeGains)
-    # print(attributes)
     for index in range(0, len(attributeGains)):
         if attributeGains[index] > maxGain:
             maxGain = attributeGains[index]
@@ -125,23 +107,7 @@ def pluralityValue(lastAttribute, parentExamples):
     else:
         return lastAttribute[randint(1, 2)]
 
-#takes in number of examples in classification 1 and number of examples in classification 2 and calculates the entropy of that given set of data
-def entropy(classification1, classification2):
-    totalExamples = classification1 + classification2
-    if classification1 is 0:
-        figure1 = 0
-    else:
-        figure1 = classification1 / float(totalExamples)
-    if classification2 is 0:
-        figure2 = 0
-    else:
-        figure2 = classification2 / float(totalExamples)
-    if figure1 == 0.0 or figure2 == 0.0:
-        return 0.0
-    else:
-        return ((-1 * figure1) * math.log(figure1, 2)) - ((figure2) * math.log(figure2, 2))
-
-
+#takes in examples, a list of lists, and classSubcategories, a list of strings, and outputs the total entropy of the given examples
 def editedEntropy(examples, classSubcategories):
     classSublist = []
     numSubCategories = len(classSubcategories)
