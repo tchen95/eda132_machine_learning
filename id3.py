@@ -52,16 +52,17 @@ def id3(examples, attributes, parentExamples):
 
 #takes in examples, a list of lists, and attributes, a list of lists, and returns attribute with greatest information gain
 def importance(examples, attributes):
-    classification1 = []
-    classification2 = []
-    for entry in examples:
-        if entry[-1] == attributes[-1][1]:
-            classification1 += [entry]
-        else:
-            classification2 += [entry]
+    # classification1 = []
+    # classification2 = []
+    # for entry in examples:
+    #     if entry[-1] == attributes[-1][1]:
+    #         classification1 += [entry]
+    #     else:
+    #         classification2 += [entry]
     attributeGains = []
     #calculates the overall entropy of the examples
-    overallEntropy = entropy(len(classification1), len(classification2))
+    overallEntropy = editedEntropy(examples, attributes[-1][1:])
+    # overallEntropy = entropy(len(classification1), len(classification2))
     for index in range(0, len(attributes) - 1):
         #creates a new sublist for each subcategory of this attribute
         divideExamples = []
@@ -77,15 +78,16 @@ def importance(examples, attributes):
         #for each subcategory, calculate the entropy
         subCategoryEntropy = []
         for subcategory in range(0, len(divideExamples)):
-            subExamples = divideExamples[subcategory]
-            firstClass = []
-            secondClass = []
-            for entry in subExamples:
-                if entry[-1] == attributes[-1][1]:
-                    firstClass += [entry]
-                else:
-                    secondClass += [entry]
-            subClassEntropy = entropy(len(firstClass), len(secondClass))
+            # subExamples = divideExamples[subcategory]
+            # firstClass = []
+            # secondClass = []
+            # for entry in subExamples:
+            #     if entry[-1] == attributes[-1][1]:
+            #         firstClass += [entry]
+            #     else:
+            #         secondClass += [entry]
+            # subClassEntropy = entropy(len(firstClass), len(secondClass))
+            subClassEntropy = editedEntropy(divideExamples[subcategory], attributes[-1][1:])
             subCategoryEntropy += [subClassEntropy]
         #calculates information gain from this particular attribute
         subCategoryTotalEntropy = 0
@@ -138,6 +140,24 @@ def entropy(classification1, classification2):
         return 0.0
     else:
         return ((-1 * figure1) * math.log(figure1, 2)) - ((figure2) * math.log(figure2, 2))
+
+
+def editedEntropy(examples, classSubcategories):
+    classSublist = []
+    numSubCategories = len(classSubcategories)
+    while numSubCategories != 0:
+        classSublist += [0]
+        numSubCategories -= 1
+    for example in examples:
+        for category in range(0, len(classSubcategories)):
+            if example[-1] == classSubcategories[category]:
+                classSublist[category] += 1
+    totalEntropy = 0
+    for item in range(0, len(classSublist)):
+        if classSublist[item] != 0:
+            figure = classSublist[item] / float(len(examples))
+            totalEntropy -= (figure * math.log(figure, 2))
+    return totalEntropy
 
 
 #returns a boolean determining of all the examples are the same classification or not
