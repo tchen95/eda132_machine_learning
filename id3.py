@@ -25,7 +25,7 @@ def id3(examples, attributes, parentExamples):
     elif len(attributes) == 1:  # Only contains classification
         # Encountering non-deterministic combination of attributes
         # Same combo of attributes, different classification
-        return tree(pluralityValue(attributes[0], examples))
+        return tree(attributes[0]+" = "+pluralityValue(attributes[0], examples))
     else:
         splittingAttribute = importance(examples, attributes)
         newAttributes = []  # list without the attribute to be split on
@@ -39,15 +39,15 @@ def id3(examples, attributes, parentExamples):
                 newAttributes += [["XXXXX"]]
                 splittingAttributeCategories = attributes[index][1:]
                 attributeIndex = index
-        splitExamplesList = splitExamples(attributeIndex, splittingAttributeCategories, examples)
+        splitExamplesList,subCategory = splitExamples(attributeIndex, splittingAttributeCategories, examples)
         children = []
         for index in range(0, len(splittingAttributeCategories)):
             if subsetIsPure(splitExamplesList[index]):
-                children += tree(sameClassification(splitExamplesList[index]))
+                children += tree(splittingAttribute+" = "+splitExamplesList[index][0][attributeIndex]+": "+sameClassification(splitExamplesList[index]))
             else:
                 children += id3(splitExamplesList[index], newAttributes, examples)
-        newTree = tree(splittingAttribute, [children])
-        return newTree
+
+        return tree(splittingAttribute+" = "+subCategory, [children])
 
 
 #takes in examples, a list of lists, and attributes, a list of lists, and returns attribute with greatest information gain
@@ -126,7 +126,7 @@ def editedEntropy(examples, classSubcategories):
     return totalEntropy
 
 
-#returns a boolean determining of all the examples are the same classification or not
+#returns the classification for a pure set
 def sameClassification(examples):
     classification = examples[0][-1]
     for index in range(1, len(examples)):
@@ -146,7 +146,7 @@ def splitExamples(attribute, subCategories, examples):
         for entry in examples:
             if entry[attribute] == subCategories[subcategory]:
                 categorizedExamples[subcategory] += [entry]
-    return categorizedExamples
+    return categorizedExamples, subCategories[subcategory]
 
 
 #return a boolean determining whether or not or subset of examples are all pure
