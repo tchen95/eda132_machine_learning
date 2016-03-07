@@ -44,11 +44,14 @@ def id3(examples, attributes, parentExamples):
         for index in range(0, len(splittingAttributeCategories)):
             if subsetIsPure(splitExamplesList[index]):
                 children += tree(splittingAttribute+" = "+splitExamplesList[index][0][attributeIndex]+": "+sameClassification(splitExamplesList[index]))
+                # children += tree(sameClassification(splitExamplesList[index]))
             else:
-                children += id3(splitExamplesList[index], newAttributes, examples)
+                treeResult = id3(splitExamplesList[index], newAttributes, examples)
+                treeResult[0] = splittingAttribute + " = " + splittingAttributeCategories[index] + ": " + treeResult[0]
+                # treeResult[0] = splittingAttribute + " = " + splittingAttributeCategories[index]
+                children += treeResult
 
-        return tree(splittingAttribute+" = "+subCategory, [children])
-
+        return tree(splittingAttribute, [children])
 
 #takes in examples, a list of lists, and attributes, a list of lists, and returns attribute with greatest information gain
 def importance(examples, attributes):
