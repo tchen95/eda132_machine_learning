@@ -18,8 +18,8 @@ def printList(nestedList):
 
 
 
-# relationName, attributeList, dataList = reader.readARFF("contact-lenses.arff")
-relationName, attributeList, dataList = reader.readARFF("restaurants.arff")
+relationName, attributeList, dataList = reader.readARFF("contact-lenses.arff")
+# relationName, attributeList, dataList = reader.readARFF("restaurants.arff")
 # relationName, attributeList, dataList = reader.readARFF("weather.nominal.arff")
 # tester = id3.tree("heyo",[4,5])
 # print(tester)
